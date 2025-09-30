@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                echo 'Checking out code from GitHub...'
                 checkout([$class: 'GitSCM',
                           branches: [[name: '*/main']],
                           userRemoteConfigs: [[url: 'https://github.com/vaibhavkolase20/Jenkins_cicd_pipeline.git']]
@@ -23,8 +24,8 @@ pipeline {
                 # Virtual environment तयार करा
                 python3 -m venv venv
 
-                # Virtual environment activate करा
-                source venv/bin/activate
+                # Virtual environment activate करा (POSIX shell compatible)
+                . venv/bin/activate
 
                 # pip upgrade करा
                 pip install --upgrade pip
@@ -32,8 +33,21 @@ pipeline {
                 # requirements.txt install करा
                 pip install -r requirements.txt
 
-                # जर आवश्यक असेल तर test command चालवा
+                # Test commands (जर आवश्यक असेल तर)
                 # python -m unittest discover tests
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                # Virtual environment activate करा
+                . venv/bin/activate
+
+                # App deploy command (उदाहरणार्थ)
+                # python app.py
+                echo "App deployed successfully!"
                 '''
             }
         }
@@ -44,7 +58,7 @@ pipeline {
             echo 'Pipeline completed successfully!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed. Check logs for details.'
         }
     }
 }
