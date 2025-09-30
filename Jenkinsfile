@@ -8,8 +8,8 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'pip install -r requirements.txt'
-                sh 'pytest test_app.py'
+                sh 'python3 -m pip install -r requirements.txt'
+                sh 'python3 -m pytest test_app.py'
             }
         }
     }
