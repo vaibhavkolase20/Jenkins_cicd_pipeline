@@ -51,9 +51,8 @@ Click Build Now → confirm pipeline works manually
 
 Check Console Output for errors
 
-5️⃣ Install Required Jenkins Plugins
-
-Go to Manage Jenkins → Manage Plugins → Available
+5️⃣ GitHub hook trigger for GITScm polling
+save
 
 Install these:
 
