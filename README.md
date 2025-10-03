@@ -223,3 +223,74 @@ Jenkins pipeline auto trigger होईल → Build History तपासा
       
       # This is the link of this documentaion
       https://chatgpt.com/share/68db7974-7eb4-800f-8dd1-91cf636c321d
+=====================================================================================================================
+# This is the automaticaly command
+            #!/bin/bash
+
+# ----------------------------
+# Step 1: Update system packages
+# ----------------------------
+echo "Updating system packages..."
+sudo apt update -y
+sudo apt upgrade -y
+
+# ----------------------------
+# Step 2: Install required packages
+# ----------------------------
+echo "Installing Python3, pip, venv, git, curl..."
+sudo apt install -y python3 python3-venv python3-pip git curl openjdk-11-jdk
+
+# ----------------------------
+# Step 3: Install Jenkins
+# ----------------------------
+echo "Installing Jenkins..."
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+    /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+    https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+    /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt update
+sudo apt install -y jenkins
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+# ----------------------------
+# Step 4: Give Jenkins user sudo permission
+# ----------------------------
+echo "Giving Jenkins user passwordless sudo access..."
+sudo usermod -aG sudo jenkins
+echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jenkins-nopasswd
+
+# ----------------------------
+# Step 5: Create workspace directory
+# ----------------------------
+echo "Setting up Jenkins workspace..."
+sudo mkdir -p /var/lib/jenkins/workspace
+sudo chown -R jenkins:jenkins /var/lib/jenkins
+sudo chmod -R 755 /var/lib/jenkins
+
+# ----------------------------
+# Step 6: Install GitHub webhook dependencies (optional)
+# ----------------------------
+sudo apt install -y python3-pip
+sudo python3 -m pip install --upgrade pip
+
+# ----------------------------
+# Step 7: Clone your project repo (for testing)
+# ----------------------------
+echo "Cloning your project repo..."
+sudo -u jenkins git clone https://github.com/vaibhavkolase20/Jenkins_cicd_pipeline.git /var/lib/jenkins/workspace/cicd-pipeline
+
+# ----------------------------
+# Step 8: Set permissions for project
+# ----------------------------
+sudo chown -R jenkins:jenkins /var/lib/jenkins/workspace/cicd-pipeline
+sudo chmod -R 755 /var/lib/jenkins/workspace/cicd-pipeline
+
+# ----------------------------
+# Step 9: Jenkins ready to run pipeline
+# ----------------------------
+echo "Setup complete! Open Jenkins in browser and create your pipeline job."
+echo "Jenkins URL: http://<YOUR_INSTANCE_IP>:8080"
+
