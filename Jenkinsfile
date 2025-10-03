@@ -21,20 +21,22 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
+                # Workspace ला write permission दे
+                chmod -R 777 $WORKSPACE
+
                 # Virtual environment तयार करा
                 python3 -m venv venv
 
-                # Virtual environment activate करा (POSIX shell compatible)
+                # Virtual environment activate करा
                 . venv/bin/activate
 
                 # pip upgrade करा
-                pip install --upgrade pip
+                python -m pip install --upgrade pip
 
-                # requirements.txt install करा
+                # requirements.txt install करा ( --user वापरायचं नाही कारण venv मध्येच install होईल)
                 pip install -r requirements.txt
 
-                # Test commands (जर आवश्यक असेल तर)
-                # python -m unittest discover tests
+                echo "Dependencies installed successfully!"
                 '''
             }
         }
@@ -45,8 +47,7 @@ pipeline {
                 # Virtual environment activate करा
                 . venv/bin/activate
 
-                # App deploy command (उदाहरणार्थ)
-                # python app.py
+                # App deploy command
                 echo "App deployed successfully!"
                 '''
             }
@@ -62,4 +63,3 @@ pipeline {
         }
     }
 }
-
